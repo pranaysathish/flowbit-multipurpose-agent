@@ -39,7 +39,7 @@ export default function Header() {
               About
             </button>
             <a 
-              href="https://github.com/yourusername/flowbit-ai-multi-agent" 
+              href="https://github.com/pranaysathish/flowbit-multipurpose-agent" 
               target="_blank" 
               rel="noopener noreferrer" 
               className="text-secondary-600 hover:text-primary-600 transition-colors font-medium"

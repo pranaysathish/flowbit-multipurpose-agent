@@ -1,6 +1,6 @@
 # FlowbitAI Multi-Agent Processing System
 
-![FlowbitAI Banner](static/flowbit-banner.png)
+![FlowbitAI Banner](E:\flowbit-new\logo.jpeg)
 
 A sophisticated multi-agent system that processes diverse input formats (Email, JSON, PDF), classifies business intent, and executes contextual follow-up actions through intelligent agent orchestration.
 
