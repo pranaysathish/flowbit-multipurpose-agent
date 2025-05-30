@@ -1,8 +1,14 @@
 import json
 import requests
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Tuple
 import uuid
+import logging
 from datetime import datetime
+from app.utils.retry import retry_on_failure, RetryContext
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class ActionRouter:
     """
@@ -60,7 +66,7 @@ class ActionRouter:
         
         return action_result
     
-    def _determine_action(self, classification: Dict[str, Any], processing_result: Dict[str, Any]) -> tuple:
+    def _determine_action(self, classification: Dict[str, Any], processing_result: Dict[str, Any]) -> Tuple[str, Dict[str, Any]]:
         """
         Determine the required action based on classification and processing results
         
@@ -88,7 +94,7 @@ class ActionRouter:
             # Default action for unknown format
             return "LOG_ONLY", action_data
     
-    def _determine_email_action(self, processing_result: Dict[str, Any], intent_type: str, priority: str, action_data: Dict[str, Any]) -> tuple:
+    def _determine_email_action(self, processing_result: Dict[str, Any], intent_type: str, priority: str, action_data: Dict[str, Any]) -> Tuple[str, Dict[str, Any]]:
         """Determine action for email input"""
         
         analysis = processing_result.get("analysis", {})
@@ -100,101 +106,64 @@ class ActionRouter:
         action_data.update({
             "tone": tone,
             "urgency": urgency,
-            "intent_type": intent_type
+            "action_required": action_required
         })
         
-        # Map email agent's action to router action
-        if action_required == "ESCALATE_TO_CRM":
-            # Create an escalated ticket in CRM
+        # Determine action based on tone, urgency, and intent
+        if tone in ["THREATENING", "ESCALATION"] or urgency == "HIGH" or intent_type == "COMPLAINT":
+            # Escalate the issue
             ticket_data = {
                 "type": "ESCALATION",
                 "priority": priority,
-                "subject": processing_result.get("structured_fields", {}).get("subject", "Email Escalation"),
-                "description": f"Escalated email from {processing_result.get('structured_fields', {}).get('sender', 'Unknown')}",
                 "tone": tone,
-                "urgency": urgency
+                "urgency": urgency,
+                "description": "Customer issue requires immediate attention"
             }
             action_data["ticket_data"] = ticket_data
             return "ESCALATE_ISSUE", action_data
+        
+        elif intent_type == "RFQ" or action_required == "CREATE_TICKET":
+            # Create a standard ticket
+            ticket_data = {
+                "type": "STANDARD",
+                "priority": priority,
+                "tone": tone,
+                "urgency": urgency,
+                "description": "Customer request requires follow-up"
+            }
+            action_data["ticket_data"] = ticket_data
+            return "CREATE_TICKET", action_data
+        
+        elif intent_type == "FRAUD_RISK":
+            # Create a risk alert
+            alert_data = {
+                "type": "FRAUD_ALERT",
+                "priority": priority,
+                "description": "Potential fraud risk detected in email"
+            }
+            action_data["alert_data"] = alert_data
+            return "RISK_ALERT", action_data
+        
         else:
             # Just log the email
             return "LOG_ONLY", action_data
     
-    def _determine_json_action(self, processing_result: Dict[str, Any], intent_type: str, priority: str, action_data: Dict[str, Any]) -> tuple:
+    def _determine_json_action(self, processing_result: Dict[str, Any], intent_type: str, priority: str, action_data: Dict[str, Any]) -> Tuple[str, Dict[str, Any]]:
         """Determine action for JSON input"""
         
-        alert_needed = processing_result.get("alert_needed", False)
         anomalies = processing_result.get("anomalies", [])
-        schema_info = processing_result.get("schema_identification", {})
+        schema_valid = processing_result.get("schema_valid", True)
         
         # Prepare action data
         action_data.update({
-            "anomalies": anomalies,
-            "intent_type": intent_type,
-            "schema_info": schema_info
+            "schema_valid": schema_valid,
+            "anomalies": anomalies
         })
         
-        # Special handling for fraud risk intent
-        if intent_type == "FRAUD_RISK":
-            # Extract original JSON data if available
-            original_data = {}
-            if "validation_results" in processing_result:
-                # Try to extract key fields from the original data
-                if "alert_type" in processing_result.get("original_data", {}):
-                    original_data = processing_result.get("original_data", {})
-            
-            # Create a risk alert with high priority
-            alert_data = {
-                "type": "FRAUD_RISK_ALERT",
-                "priority": "HIGH",  # Override to HIGH for fraud risks
-                "risk_level": original_data.get("risk_level", "unknown"),
-                "transaction_id": original_data.get("transaction_id", "unknown"),
-                "recommended_action": original_data.get("recommended_action", "investigate"),
-                "confidence_score": original_data.get("confidence_score", 0),
-                "description": "Potential fraud risk detected in transaction"
-            }
-            action_data["alert_data"] = alert_data
-            return "RISK_ALERT", action_data
-        
-        # If schema is fraud_alert, create a risk alert regardless of anomalies
-        if schema_info.get("schema_name") == "fraud_alert" and schema_info.get("confidence", 0) > 0.5:
-            alert_data = {
-                "type": "FRAUD_ALERT_SCHEMA",
-                "priority": priority,
-                "schema": schema_info.get("schema_name"),
-                "confidence": schema_info.get("confidence"),
-                "description": "Fraud alert schema detected in JSON data"
-            }
-            action_data["alert_data"] = alert_data
-            return "RISK_ALERT", action_data
-        
-        # If anomalies are detected, create a risk alert
-        if alert_needed and anomalies:
-            # Check for suspicious patterns related to fraud
-            fraud_related_anomalies = []
-            for anomaly in anomalies:
-                if anomaly.get("type") == "suspicious_patterns":
-                    patterns = anomaly.get("details", {}).get("patterns", [])
-                    for pattern in patterns:
-                        if any(term in pattern.get("reason", "").lower() for term in 
-                              ["fraud", "risk", "suspicious", "unusual", "high risk", "large amount"]):
-                            fraud_related_anomalies.append(pattern)
-            
-            # If fraud-related anomalies are found, escalate to RISK_ALERT
-            if fraud_related_anomalies:
-                alert_data = {
-                    "type": "FRAUD_RISK_PATTERNS",
-                    "priority": "HIGH",  # Override to HIGH for fraud risks
-                    "anomaly_count": len(fraud_related_anomalies),
-                    "patterns": fraud_related_anomalies,
-                    "description": f"Detected {len(fraud_related_anomalies)} fraud risk patterns in JSON data"
-                }
-                action_data["alert_data"] = alert_data
-                return "RISK_ALERT", action_data
-            
-            # For other anomalies
+        # Check for anomalies that might indicate fraud
+        if not schema_valid or (anomalies and len(anomalies) > 0):
+            # Create a risk alert for anomalies
             anomaly_types = [anomaly.get("type") for anomaly in anomalies]
-            
             alert_data = {
                 "type": "JSON_ANOMALY",
                 "priority": priority,
@@ -207,7 +176,7 @@ class ActionRouter:
             # Just log the JSON processing
             return "LOG_ONLY", action_data
     
-    def _determine_pdf_action(self, processing_result: Dict[str, Any], intent_type: str, priority: str, action_data: Dict[str, Any]) -> tuple:
+    def _determine_pdf_action(self, processing_result: Dict[str, Any], intent_type: str, priority: str, action_data: Dict[str, Any]) -> Tuple[str, Dict[str, Any]]:
         """Determine action for PDF input"""
         
         document_type = processing_result.get("document_type", "GENERAL")
@@ -261,72 +230,113 @@ class ActionRouter:
             # Just log the PDF processing
             return "LOG_ONLY", action_data
     
+    @retry_on_failure(max_retries=3, retry_delay=1.0, backoff_factor=2.0, exceptions=(requests.RequestException, ConnectionError, TimeoutError))
+    def _make_api_call(self, action_type: str, endpoint: str, action_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Make an API call with retry logic
+        
+        Args:
+            action_type: Type of action to execute
+            endpoint: API endpoint to call
+            action_data: Data to send with the API call
+            
+        Returns:
+            Dict containing API call results
+        """
+        logger.info(f"Making API call for action: {action_type} to endpoint: {endpoint}")
+        
+        # In a real system, this would be an actual HTTP request
+        # For simulation, we'll generate a response as if the call succeeded
+        
+        # Simulate API call
+        if action_type == "CREATE_TICKET" or action_type == "ESCALATE_ISSUE":
+            ticket_id = str(uuid.uuid4())
+            return {
+                "status": "completed",
+                "message": f"Ticket created successfully with ID: {ticket_id}",
+                "ticket_id": ticket_id,
+                "ticket_data": action_data.get("ticket_data", {}),
+                "retry_info": {"attempts": 1, "success": True}
+            }
+        
+        elif action_type == "FLAG_COMPLIANCE":
+            log_id = str(uuid.uuid4())
+            return {
+                "status": "completed",
+                "message": f"Compliance issue logged successfully with ID: {log_id}",
+                "log_id": log_id,
+                "compliance_data": action_data.get("compliance_data", {}),
+                "retry_info": {"attempts": 1, "success": True}
+            }
+        
+        elif action_type == "RISK_ALERT":
+            alert_id = str(uuid.uuid4())
+            return {
+                "status": "completed",
+                "message": f"Risk alert created successfully with ID: {alert_id}",
+                "alert_id": alert_id,
+                "alert_data": action_data.get("alert_data", {}),
+                "retry_info": {"attempts": 1, "success": True}
+            }
+        
+        # Default case - should not reach here
+        return {
+            "status": "failed",
+            "message": f"Unknown action type: {action_type}",
+            "retry_info": {"attempts": 1, "success": False}
+        }
+    
     def _execute_action(self, action_type: str, action_data: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Execute the determined action (simulated API call)
+        Execute the determined action (simulated API call) with retry logic
         
         Returns:
             Dict containing action execution results
         """
-        endpoint = self.action_endpoints.get(action_type)
-        
-        # For LOG_ONLY actions, no API call needed
-        if action_type == "LOG_ONLY" or not endpoint:
-            return {
-                "action_type": action_type,
-                "status": "completed",
-                "message": "Action logged only, no external API call required",
-                "timestamp": datetime.now().isoformat()
-            }
-        
-        # Prepare result with default values
         result = {
             "action_type": action_type,
-            "endpoint": endpoint,
-            "status": "failed",
-            "message": "Action execution failed",
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
         
-        try:
-            # In a real implementation, this would make an actual API call
-            # For simulation, we'll just prepare the response as if the call succeeded
-            
-            # Simulate API call based on action type
-            if action_type == "CREATE_TICKET" or action_type == "ESCALATE_ISSUE":
-                ticket_id = str(uuid.uuid4())
-                result.update({
-                    "status": "completed",
-                    "message": f"Ticket created successfully with ID: {ticket_id}",
-                    "ticket_id": ticket_id,
-                    "ticket_data": action_data.get("ticket_data", {})
-                })
-            
-            elif action_type == "FLAG_COMPLIANCE":
-                log_id = str(uuid.uuid4())
-                result.update({
-                    "status": "completed",
-                    "message": f"Compliance issue logged successfully with ID: {log_id}",
-                    "log_id": log_id,
-                    "compliance_data": action_data.get("compliance_data", {})
-                })
-            
-            elif action_type == "RISK_ALERT":
-                alert_id = str(uuid.uuid4())
-                result.update({
-                    "status": "completed",
-                    "message": f"Risk alert created successfully with ID: {alert_id}",
-                    "alert_id": alert_id,
-                    "alert_data": action_data.get("alert_data", {})
-                })
+        # For LOG_ONLY action, no API call needed
+        if action_type == "LOG_ONLY":
+            result.update({
+                "status": "completed",
+                "message": "Information logged successfully",
+                "retry_info": {"attempts": 0, "success": True}
+            })
+            return result
         
-        except Exception as e:
-            # Handle any exceptions during action execution
+        # Get the endpoint for the action
+        endpoint = self.action_endpoints.get(action_type)
+        if not endpoint:
             result.update({
                 "status": "failed",
-                "message": f"Action execution failed: {str(e)}",
-                "error": str(e)
+                "message": f"Unknown action type: {action_type}",
+                "retry_info": {"attempts": 0, "success": False}
             })
+            return result
+        
+        # Use RetryContext for more complex retry scenarios
+        with RetryContext(f"execute_{action_type}", max_retries=3, retry_delay=1.0, backoff_factor=2.0) as retry_ctx:
+            try:
+                # Try to execute the action with the retry decorator
+                api_result = self._make_api_call(action_type, endpoint, action_data)
+                result.update(api_result)
+                
+                # Add retry information to the result
+                if "retry_info" not in result:
+                    result["retry_info"] = {"attempts": retry_ctx.retry_count + 1, "success": True}
+                
+            except Exception as e:
+                # Handle any exceptions during action execution
+                logger.error(f"Action execution failed after {retry_ctx.retry_count + 1} attempts: {str(e)}")
+                result.update({
+                    "status": "failed",
+                    "message": f"Action execution failed: {str(e)}",
+                    "error": str(e),
+                    "retry_info": {"attempts": retry_ctx.retry_count + 1, "success": False}
+                })
         
         return result
     
@@ -358,14 +368,14 @@ class ActionRouter:
                     reasoning_parts.append(f"Escalation required due to {tone.lower()} tone")
                 if urgency == "HIGH":
                     reasoning_parts.append("Escalation required due to high urgency")
-        
+            
         elif format_type == "JSON":
             anomalies = processing_result.get("anomalies", [])
             
             if action_type == "RISK_ALERT" and anomalies:
                 anomaly_types = [anomaly.get("type") for anomaly in anomalies]
                 reasoning_parts.append(f"Risk alert created due to detected anomalies: {', '.join(anomaly_types)}")
-        
+            
         elif format_type == "PDF":
             document_type = processing_result.get("document_type", "GENERAL")
             flags = processing_result.get("flags", [])
@@ -374,10 +384,10 @@ class ActionRouter:
             
             if action_type == "FLAG_COMPLIANCE":
                 reasoning_parts.append("Compliance flagging required due to detected compliance references")
-            
+                
             elif action_type == "CREATE_TICKET" and document_type == "INVOICE":
                 reasoning_parts.append("Ticket created for high-value invoice that requires approval")
-            
+                
             elif action_type == "RISK_ALERT" and flags:
                 flag_types = [flag.get("type") for flag in flags]
                 reasoning_parts.append(f"Risk alert created due to detected flags: {', '.join(flag_types)}")

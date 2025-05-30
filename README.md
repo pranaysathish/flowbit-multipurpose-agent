@@ -87,7 +87,26 @@ This system demonstrates advanced multi-agent AI architecture with autonomous de
 
 ## 🚀 Setup and Installation
 
-### Backend Setup
+### Option 1: Docker Setup (Recommended)
+
+1. Clone the repository
+```bash
+git clone https://github.com/pranaysathish/flowbit-multipurpose-agent.git
+cd flowbit-multipurpose-agent
+```
+
+2. Build and run with Docker Compose
+```bash
+docker-compose up --build
+```
+
+This will start both the backend and frontend services:
+- Backend API will be available at http://localhost:8000
+- Frontend application will be available at http://localhost:3000
+
+### Option 2: Manual Setup
+
+#### Backend Setup
 
 1. Clone the repository
 ```bash
@@ -110,7 +129,7 @@ python run.py
 
 The backend API will be available at http://localhost:8000
 
-### Frontend Setup
+#### Frontend Setup
 
 1. Navigate to the UI directory
 ```bash
@@ -208,11 +227,13 @@ http://localhost:8000/docs
 - ✅ **User Interface**: Built a modern, responsive UI for data upload and visualization
 - ✅ **Error Handling**: Implemented comprehensive error handling throughout the system
 - ✅ **Processing Visualization**: Added real-time processing step visualization
+- ✅ **Retry Logic**: Implemented automatic retry with exponential backoff for failed agent actions
+- ✅ **Dockerization**: Packaged the entire application for easy deployment using Docker
 
 ### Future Enhancements
-- 🔄 **Retry Logic**: Add automatic retry for failed agent actions
-- 🐳 **Dockerization**: Package the entire application for easy deployment
 - 🧠 **Machine Learning**: Integrate ML models for improved classification accuracy
+- 🔄 **Distributed Processing**: Scale the system to handle larger volumes of data
+- 🔒 **Enhanced Security**: Add authentication and authorization for secure access
 
 ## 📊 Screenshots
 
