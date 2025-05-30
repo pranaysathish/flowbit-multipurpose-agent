@@ -233,10 +233,6 @@ Connect with me:
 - [GitHub](https://github.com/pranaysathish)
 - [LinkedIn](https://www.linkedin.com/in/pranay-j-sathish/)
 
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
 ## Usage
 
 1. Send a request to the API with your input data (Email, JSON, or PDF)
