@@ -91,8 +91,8 @@ This system demonstrates advanced multi-agent AI architecture with autonomous de
 
 1. Clone the repository
 ```bash
-git clone https://github.com/pranay-jain-software/flowbit-ai-multi-agent.git
-cd flowbit-ai-multi-agent
+git clone https://github.com/pranaysathish/flowbit-multipurpose-agent.git
+cd flowbit-multipurpose-agent
 ```
 
 2. Create a virtual environment and install dependencies
@@ -217,22 +217,21 @@ http://localhost:8000/docs
 ## 📊 Screenshots
 
 ### Main Interface
-![Main Interface](static/screenshots/main-interface.png)
+![Main Interface](screenshots/main-interface.png)
 
 ### Processing Results
-![Processing Results](static/screenshots/processing-results.png)
+![Processing Results](screenshots/processing-results.png)
 
 ### Full Trace View
-![Full Trace](static/screenshots/full-trace.png)
+![Full Trace](screenshots/processing-trace.png)
 
 ## 👨‍💻 About the Developer
 
 This project was developed by Pranay J Sathish as part of the FlowbitAI Agent Development Internship assessment.
 
 Connect with me:
-- [GitHub](https://github.com/pranay-jain-software)
-- [LinkedIn](https://linkedin.com/in/your-linkedin)
-- [Portfolio](https://your-portfolio-website.com)
+- [GitHub](https://github.com/pranaysathish)
+- [LinkedIn](https://www.linkedin.com/in/pranay-j-sathish/)
 
 ## 📄 License
 
