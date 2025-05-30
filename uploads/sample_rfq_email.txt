@@ -1,0 +1,35 @@
+From: procurement@client-company.com
+To: sales@supplier.com
+Subject: Request for Quotation - Enterprise Software Package
+Date: May 30, 2025
+
+Dear Sales Team,
+
+I am writing to request a quotation for your enterprise software package for our organization. We are looking to implement a comprehensive solution for our 500+ employee company.
+
+Specifically, we require:
+
+1. Core ERP modules (Finance, HR, Inventory)
+2. CRM integration capabilities
+3. Mobile application access
+4. Cloud hosting with 99.9% uptime guarantee
+5. Training for 20 admin users
+
+Please provide pricing details including:
+- License costs (per user/per module)
+- Implementation costs
+- Annual maintenance and support fees
+- Any additional costs we should be aware of
+
+We would appreciate receiving your detailed quote by June 10, 2025, as we are planning to make a decision by the end of the month.
+
+If you have any questions or need additional information to prepare the quotation, please don't hesitate to contact me.
+
+Thank you for your assistance.
+
+Best regards,
+Sarah Johnson
+Procurement Manager
+Client Company Inc.
+Email: procurement@client-company.com
+Phone: 555-987-6543

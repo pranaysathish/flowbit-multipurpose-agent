@@ -1,0 +1,26 @@
+{
+  "alert_type": "transaction_risk",
+  "risk_level": "high",
+  "timestamp": "2025-05-30T14:25:30Z",
+  "transaction_id": "tx-98765432",
+  "account_id": "acc-12345",
+  "details": {
+    "amount": 15000.00,
+    "currency": "USD",
+    "payment_method": "credit_card",
+    "card_last_four": "4321",
+    "location": {
+      "ip": "203.0.113.195",
+      "country": "RU",
+      "city": "Unknown"
+    },
+    "risk_factors": [
+      "unusual_location",
+      "amount_threshold_exceeded",
+      "velocity_check_failed",
+      "multiple_attempts"
+    ]
+  },
+  "recommended_action": "block",
+  "confidence_score": 0.92
+}

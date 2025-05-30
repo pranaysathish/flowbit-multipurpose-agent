@@ -1,0 +1,37 @@
+From: security@bankingsystem.com
+To: customer@example.com
+Subject: SECURITY ALERT: Suspicious Activity Detected
+Date: May 31, 2025
+X-Priority: 1 (Highest)
+
+URGENT SECURITY ALERT
+
+Dear Valued Customer,
+
+Our fraud detection system has identified suspicious activity on your account ending in ****4567 on May 31, 2025 at 02:15 AM EST.
+
+SUSPICIOUS ACTIVITY DETAILS:
+- Transaction Type: International Wire Transfer
+- Amount: $9,850.00
+- Destination: Account in [REDACTED]
+- Transaction ID: TRX-20250531-08742
+
+This transaction has been temporarily blocked due to the following risk factors:
+1. Unusual transaction location
+2. Amount exceeds typical transaction pattern
+3. Transaction time outside normal activity hours
+4. Similar pattern to known fraud attempts
+
+IMMEDIATE ACTION REQUIRED:
+If you did NOT authorize this transaction, please:
+1. Contact our Fraud Department IMMEDIATELY at 1-800-555-0123
+2. Request an immediate account freeze
+3. Change your online banking password
+
+If you DID authorize this transaction, please call the number above to verify your identity and approve the transaction.
+
+DO NOT IGNORE THIS MESSAGE. Failure to respond within 24 hours may result in continued account restrictions.
+
+Security Department
+Banking System Financial Services
+This is an automated message. Please do not reply directly to this email.

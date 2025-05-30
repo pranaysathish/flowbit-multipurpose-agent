@@ -1,0 +1,163 @@
+{
+  "request_id": "72e9c543-d497-4229-a0b3-cb05002c36d6",
+  "timestamp": "2025-05-31T03:35:19.703530",
+  "status": "action_completed",
+  "traces": [
+    {
+      "timestamp": "2025-05-31T03:35:19.903128",
+      "agent": "system",
+      "action": "input_received",
+      "data": {
+        "input_source": "email",
+        "timestamp": "2025-05-31T03:35:19.903128"
+      }
+    },
+    {
+      "timestamp": "2025-05-31T03:35:20.084277",
+      "agent": "classifier_agent",
+      "action": "classification_completed",
+      "data": {
+        "format": "EMAIL",
+        "intent": "FRAUD_RISK",
+        "confidence": 0.92,
+        "priority": "HIGH"
+      }
+    },
+    {
+      "timestamp": "2025-05-31T03:35:20.173753",
+      "agent": "classifier_agent",
+      "action": "classification_details",
+      "data": {
+        "format_detection": {
+          "detected_format": "EMAIL",
+          "input_source": "email"
+        },
+        "intent_detection": {
+          "detected_intent": "FRAUD_RISK",
+          "confidence": 0.92,
+          "matched_keywords": [
+            "suspicious",
+            "alert",
+            "security alert",
+            "fraud",
+            "risk factors",
+            "unusual"
+          ]
+        },
+        "priority_determination": {
+          "assigned_priority": "HIGH",
+          "reasoning": "FRAUD_RISK intent with urgent language and security implications"
+        }
+      }
+    },
+    {
+      "timestamp": "2025-05-31T03:35:20.334961",
+      "agent": "email_agent",
+      "action": "processing_completed",
+      "data": {
+        "structured_fields": {
+          "sender": "security@bankingsystem.com",
+          "recipient": "customer@example.com",
+          "subject": "SECURITY ALERT: Suspicious Activity Detected",
+          "date": "May 31, 2025",
+          "cc": "",
+          "reply_to": "",
+          "issue": "Suspicious activity on account ending in ****4567",
+          "reference_ids": ["TRX-20250531-08742"]
+        },
+        "analysis": {
+          "tone": "URGENT",
+          "urgency": "HIGH",
+          "action_required": "ESCALATE"
+        }
+      }
+    },
+    {
+      "timestamp": "2025-05-31T03:35:20.428872",
+      "agent": "email_agent",
+      "action": "email_processing_details",
+      "data": {
+        "tone_analysis": {
+          "detected_tone": "URGENT",
+          "tone_indicators": [
+            "URGENT",
+            "IMMEDIATE ACTION REQUIRED",
+            "SECURITY ALERT"
+          ]
+        },
+        "urgency_analysis": {
+          "urgency_level": "HIGH",
+          "urgency_indicators": [
+            "X-Priority: 1 (Highest)",
+            "DO NOT IGNORE THIS MESSAGE",
+            "IMMEDIATELY"
+          ]
+        },
+        "action_determination": {
+          "action": "ESCALATE",
+          "reasoning": "High urgency security alert requires immediate attention and escalation"
+        }
+      }
+    },
+    {
+      "timestamp": "2025-05-31T03:35:20.619305",
+      "agent": "action_router",
+      "action": "action_completed",
+      "data": {
+        "action_type": "CREATE_TICKET",
+        "status": "completed",
+        "message": "Security alert ticket created with HIGH priority",
+        "timestamp": "2025-05-31T03:35:20.531397",
+        "ticket_id": "TICKET-20250531-1247"
+      }
+    },
+    {
+      "timestamp": "2025-05-31T03:35:20.703128",
+      "agent": "action_router",
+      "action": "action_routing_details",
+      "data": {
+        "determined_action": "CREATE_TICKET",
+        "action_reasoning": "Input format: EMAIL; Business intent: FRAUD_RISK; Priority: HIGH; Email tone: URGENT; Email urgency: HIGH",
+        "action_result": {
+          "action_type": "CREATE_TICKET",
+          "status": "completed",
+          "message": "Security alert ticket created with HIGH priority",
+          "timestamp": "2025-05-31T03:35:20.531397",
+          "ticket_id": "TICKET-20250531-1247"
+        }
+      }
+    }
+  ],
+  "input_source": "email",
+  "input_data": "From: security@bankingsystem.com\r\nTo: customer@example.com\r\nSubject: SECURITY ALERT: Suspicious Activity Detected\r\nDate: May 31, 2025\r\nX-Priority: 1 (Highest)\r\n\r\nURGENT SECURITY ALERT\r\n\r\nDear Valued Customer,\r\n\r\nOur fraud detection system has identified suspicious activity on your account ending in ****4567 on May 31, 2025 at 02:15 AM EST.\r\n\r\nSUSPICIOUS ACTIVITY DETAILS:\r\n- Transaction Type: International Wire Transfer\r\n- Amount: $9,850.00\r\n- Destination: Account in [REDACTED]\r\n- Transaction ID: TRX-20250531-08742\r\n\r\nThis transaction has been temporarily blocked due to the following risk factors:\r\n1. Unusual transaction location\r\n2. Amount exceeds typical transaction pattern\r\n3. Transaction time outside normal activity hours\r\n4. Similar pattern to known fraud attempts\r\n\r\nIMMEDIATE ACTION REQUIRED:\r\nIf you did NOT authorize this transaction, please:\r\n1. Contact our Fraud Department IMMEDIATELY at 1-800-555-0123\r\n2. Request an immediate account freeze\r\n3. Change your online banking password\r\n\r\nIf you DID authorize this transaction, please call the number above to verify your identity and approve the transaction.\r\n\r\nDO NOT IGNORE THIS MESSAGE. Failure to respond within 24 hours may result in continued account restrictions.\r\n\r\nSecurity Department\r\nBanking System Financial Services\r\nThis is an automated message. Please do not reply directly to this email.",
+  "classification": {
+    "format": "EMAIL",
+    "intent": "FRAUD_RISK",
+    "confidence": 0.92,
+    "priority": "HIGH"
+  },
+  "processing_result": {
+    "structured_fields": {
+      "sender": "security@bankingsystem.com",
+      "recipient": "customer@example.com",
+      "subject": "SECURITY ALERT: Suspicious Activity Detected",
+      "date": "May 31, 2025",
+      "cc": "",
+      "reply_to": "",
+      "issue": "Suspicious activity on account ending in ****4567",
+      "reference_ids": ["TRX-20250531-08742"]
+    },
+    "analysis": {
+      "tone": "URGENT",
+      "urgency": "HIGH",
+      "action_required": "ESCALATE"
+    }
+  },
+  "action_result": {
+    "action_type": "CREATE_TICKET",
+    "status": "completed",
+    "message": "Security alert ticket created with HIGH priority",
+    "timestamp": "2025-05-31T03:35:20.531397",
+    "ticket_id": "TICKET-20250531-1247"
+  }
+}

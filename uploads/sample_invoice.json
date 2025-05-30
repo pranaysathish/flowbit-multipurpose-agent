@@ -1,0 +1,56 @@
+{
+  "invoice_number": "INV-2025-0531",
+  "issue_date": "2025-05-30",
+  "due_date": "2025-06-15",
+  "customer": {
+    "id": "CUST-12345",
+    "name": "Acme Corporation",
+    "email": "accounts@acmecorp.com",
+    "address": {
+      "street": "123 Business Avenue",
+      "city": "Metropolis",
+      "state": "NY",
+      "zip": "10001",
+      "country": "USA"
+    }
+  },
+  "items": [
+    {
+      "id": "ITEM-001",
+      "description": "Enterprise Software License",
+      "quantity": 5,
+      "unit_price": 1999.99,
+      "subtotal": 9999.95
+    },
+    {
+      "id": "ITEM-002",
+      "description": "Technical Support (Annual)",
+      "quantity": 1,
+      "unit_price": 2500.00,
+      "subtotal": 2500.00
+    },
+    {
+      "id": "ITEM-003",
+      "description": "Implementation Services",
+      "quantity": 40,
+      "unit_price": 150.00,
+      "subtotal": 6000.00
+    }
+  ],
+  "summary": {
+    "subtotal": 18499.95,
+    "tax_rate": 0.08,
+    "tax_amount": 1480.00,
+    "total": 19979.95,
+    "currency": "USD"
+  },
+  "payment_terms": "Net 15",
+  "payment_instructions": {
+    "bank_name": "First National Bank",
+    "account_name": "Tech Solutions Inc.",
+    "account_number": "XXXX-XXXX-1234",
+    "routing_number": "XXXXX0123",
+    "swift_code": "FNBKUS12"
+  },
+  "notes": "Thank you for your business. Please include the invoice number with your payment."
+}

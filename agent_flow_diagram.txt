@@ -1,0 +1,95 @@
+FlowbitAI Multi-Agent System Flow Diagram
+======================================
+
+1. Input Reception
+   |
+   ├── File Upload (.eml, .json, .pdf)
+   |   └── File saved to uploads directory
+   |
+   ├── JSON Input
+   |   └── Parsed as JSON object
+   |
+   └── Email Input
+       └── Processed as text
+
+2. Classifier Agent
+   |
+   ├── Format Detection
+   |   ├── EMAIL: Header/content pattern matching
+   |   ├── JSON: Structure validation
+   |   └── PDF: Binary content analysis
+   |
+   ├── Intent Classification
+   |   ├── Keyword matching against intent libraries
+   |   ├── Content analysis for context
+   |   └── Confidence scoring (0.0-1.0)
+   |
+   └── Priority Determination
+       ├── HIGH: Urgent/critical content
+       ├── MEDIUM: Standard business content
+       └── LOW: Informational content
+
+3. Specialized Agent Processing
+   |
+   ├── Email Agent
+   |   ├── Structured field extraction
+   |   ├── Tone analysis (URGENT, POLITE, THREATENING)
+   |   ├── Urgency detection (HIGH, MEDIUM, LOW)
+   |   └── Action recommendation
+   |
+   ├── JSON Agent
+   |   ├── Schema validation
+   |   ├── Required field checking
+   |   ├── Type consistency validation
+   |   └── Anomaly detection
+   |
+   └── PDF Agent
+       ├── Text extraction
+       ├── Field recognition
+       ├── Value threshold checking
+       └── Compliance term detection
+
+4. Shared Memory Store
+   |
+   ├── Request metadata storage
+   ├── Classification results storage
+   ├── Agent processing results storage
+   └── Trace recording
+       ├── System events
+       ├── Classification details
+       ├── Processing details
+       └── Action details
+
+5. Action Router
+   |
+   ├── Action Determination
+   |   ├── Input: Classification + Agent results
+   |   ├── Decision logic based on content
+   |   └── Action selection with reasoning
+   |
+   └── Action Execution
+       ├── CREATE_TICKET: For complaints/issues
+       ├── CREATE_RISK_ALERT: For fraud/security
+       ├── LOG_COMPLIANCE_ISSUE: For regulatory
+       ├── CREATE_APPROVAL_REQUEST: For high-value
+       └── LOG_ONLY: For informational
+
+6. Response Generation
+   |
+   └── Complete processing result
+       ├── Classification summary
+       ├── Processing details
+       ├── Action results
+       └── Full trace for audit
+
+Decision Flow Examples:
+----------------------
+
+Example 1: Fraud Alert Email
+Input → Classifier (EMAIL+FRAUD_RISK+HIGH) → Email Agent (URGENT tone) → Action Router → CREATE_RISK_ALERT
+
+Example 2: High-Value Invoice
+Input → Classifier (PDF+INVOICE+HIGH) → PDF Agent (>$10k threshold) → Action Router → CREATE_APPROVAL_REQUEST
+
+Example 3: Customer Complaint
+Input → Classifier (EMAIL+COMPLAINT+MEDIUM) → Email Agent (ANGRY tone) → Action Router → CREATE_TICKET

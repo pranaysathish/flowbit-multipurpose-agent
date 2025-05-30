@@ -1,0 +1,195 @@
+{
+  "request_id": "83f7c621-e5a8-4b19-9d42-cb05002c36d7",
+  "timestamp": "2025-05-31T03:36:45.703530",
+  "status": "action_completed",
+  "traces": [
+    {
+      "timestamp": "2025-05-31T03:36:45.903128",
+      "agent": "system",
+      "action": "input_received",
+      "data": {
+        "input_source": "json",
+        "timestamp": "2025-05-31T03:36:45.903128"
+      }
+    },
+    {
+      "timestamp": "2025-05-31T03:36:46.084277",
+      "agent": "classifier_agent",
+      "action": "classification_completed",
+      "data": {
+        "format": "JSON",
+        "intent": "FRAUD_RISK",
+        "confidence": 0.85,
+        "priority": "HIGH"
+      }
+    },
+    {
+      "timestamp": "2025-05-31T03:36:46.173753",
+      "agent": "classifier_agent",
+      "action": "classification_details",
+      "data": {
+        "format_detection": {
+          "detected_format": "JSON",
+          "input_source": "json"
+        },
+        "intent_detection": {
+          "detected_intent": "FRAUD_RISK",
+          "confidence": 0.85,
+          "matched_keywords": [
+            "risk_level",
+            "suspicious",
+            "unusual_location",
+            "velocity",
+            "threshold",
+            "exceeded"
+          ]
+        },
+        "priority_determination": {
+          "assigned_priority": "HIGH",
+          "reasoning": "FRAUD_RISK intent with multiple risk indicators and high risk level"
+        }
+      }
+    },
+    {
+      "timestamp": "2025-05-31T03:36:46.334961",
+      "agent": "json_agent",
+      "action": "processing_completed",
+      "data": {
+        "schema_validation": {
+          "schema_name": "transaction_webhook",
+          "is_valid": false,
+          "missing_fields": [],
+          "type_errors": []
+        },
+        "anomalies": [
+          {
+            "type": "suspicious_pattern",
+            "description": "Multiple transactions from different locations in short timeframe",
+            "severity": "HIGH",
+            "fields": ["ip_address", "timestamp", "location"]
+          },
+          {
+            "type": "threshold_exceeded",
+            "description": "Transaction amount exceeds user's typical pattern by 500%",
+            "severity": "HIGH",
+            "fields": ["amount", "user_id"]
+          },
+          {
+            "type": "unusual_location",
+            "description": "Transaction location does not match user's history",
+            "severity": "MEDIUM",
+            "fields": ["location", "user_id"]
+          }
+        ]
+      }
+    },
+    {
+      "timestamp": "2025-05-31T03:36:46.428872",
+      "agent": "json_agent",
+      "action": "json_processing_details",
+      "data": {
+        "schema_detection": {
+          "detected_schema": "transaction_webhook",
+          "confidence": 0.92,
+          "matching_fields": ["transaction_id", "user_id", "amount", "timestamp"]
+        },
+        "anomaly_detection": {
+          "anomaly_count": 3,
+          "highest_severity": "HIGH",
+          "analysis": "Multiple high-severity anomalies detected indicating potential fraud"
+        }
+      }
+    },
+    {
+      "timestamp": "2025-05-31T03:36:46.619305",
+      "agent": "action_router",
+      "action": "action_completed",
+      "data": {
+        "action_type": "CREATE_RISK_ALERT",
+        "status": "completed",
+        "message": "Risk alert created with HIGH priority",
+        "timestamp": "2025-05-31T03:36:46.531397",
+        "alert_id": "ALERT-20250531-0874"
+      }
+    },
+    {
+      "timestamp": "2025-05-31T03:36:46.703128",
+      "agent": "action_router",
+      "action": "action_routing_details",
+      "data": {
+        "determined_action": "CREATE_RISK_ALERT",
+        "action_reasoning": "Input format: JSON; Business intent: FRAUD_RISK; Priority: HIGH; Multiple high-severity anomalies detected",
+        "action_result": {
+          "action_type": "CREATE_RISK_ALERT",
+          "status": "completed",
+          "message": "Risk alert created with HIGH priority",
+          "timestamp": "2025-05-31T03:36:46.531397",
+          "alert_id": "ALERT-20250531-0874"
+        }
+      }
+    }
+  ],
+  "input_source": "json",
+  "input_data": {
+    "transaction_id": "TRX-20250531-08742",
+    "user_id": "USR-12345",
+    "amount": 9850.00,
+    "currency": "USD",
+    "timestamp": "2025-05-31T02:15:23Z",
+    "merchant": "International Transfer Service",
+    "location": "Unknown Location",
+    "ip_address": "203.0.113.195",
+    "device_id": "DEV-98765",
+    "risk_level": "HIGH",
+    "risk_factors": [
+      "unusual_location",
+      "amount_threshold_exceeded",
+      "velocity_check_failed",
+      "time_pattern_anomaly"
+    ],
+    "previous_transaction_time": "2025-05-31T02:10:05Z",
+    "previous_transaction_location": "New York, USA",
+    "recommended_action": "BLOCK"
+  },
+  "classification": {
+    "format": "JSON",
+    "intent": "FRAUD_RISK",
+    "confidence": 0.85,
+    "priority": "HIGH"
+  },
+  "processing_result": {
+    "schema_validation": {
+      "schema_name": "transaction_webhook",
+      "is_valid": false,
+      "missing_fields": [],
+      "type_errors": []
+    },
+    "anomalies": [
+      {
+        "type": "suspicious_pattern",
+        "description": "Multiple transactions from different locations in short timeframe",
+        "severity": "HIGH",
+        "fields": ["ip_address", "timestamp", "location"]
+      },
+      {
+        "type": "threshold_exceeded",
+        "description": "Transaction amount exceeds user's typical pattern by 500%",
+        "severity": "HIGH",
+        "fields": ["amount", "user_id"]
+      },
+      {
+        "type": "unusual_location",
+        "description": "Transaction location does not match user's history",
+        "severity": "MEDIUM",
+        "fields": ["location", "user_id"]
+      }
+    ]
+  },
+  "action_result": {
+    "action_type": "CREATE_RISK_ALERT",
+    "status": "completed",
+    "message": "Risk alert created with HIGH priority",
+    "timestamp": "2025-05-31T03:36:46.531397",
+    "alert_id": "ALERT-20250531-0874"
+  }
+}

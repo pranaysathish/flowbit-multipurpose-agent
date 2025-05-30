@@ -1,0 +1,38 @@
+From: security-alerts@bank-system.com
+To: security-team@company.com
+Subject: URGENT: Suspicious Account Activity Detected
+Date: May 30, 2025
+
+SECURITY ALERT - CONFIDENTIAL
+
+This is an automated security alert from the Banking Security System.
+
+We have detected potentially fraudulent activity on your corporate account #ACCT-78901234 at 15:42 UTC today.
+
+Alert Details:
+- Transaction Type: Wire Transfer
+- Amount: $24,750.00
+- Destination: International Bank (Country: Latvia)
+- IP Address of Origin: 185.212.xx.xx (Not matching your usual access points)
+- Authentication: Successful but with multiple failed attempts preceding
+
+This transaction has been temporarily flagged and held for review due to the following risk factors:
+1. Unusual destination country for your business operations
+2. Amount exceeds typical transaction threshold
+3. Multiple failed authentication attempts before success
+4. Transaction initiated outside normal business hours
+
+REQUIRED ACTION:
+Please verify whether this transaction is legitimate by contacting our fraud department IMMEDIATELY at 1-800-555-9876 (available 24/7).
+
+If you cannot confirm this transaction as legitimate within 4 hours, it will be automatically canceled as a security precaution.
+
+DO NOT SHARE THIS ALERT with unauthorized personnel as it contains sensitive account information.
+
+Regards,
+Banking Security Team
+Security Operations Center
+
+This is an automated message. Please do not reply directly to this email.
+---
+Security Reference: SEC-INC-78452-05302025

@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 30, 41, 59; /* #1E293B - dark text */
+  --background-start-rgb: 248, 250, 252; /* #F8FAFC - light background */
+  --background-end-rgb: 241, 245, 249; /* #F1F5F9 - light background */
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      rgb(var(--background-start-rgb)),
+      rgb(var(--background-end-rgb))
+    )
+    fixed;
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Glassmorphism */
+.glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(124, 58, 237, 0.1);
+  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.1);
+}
+
+/* Default scrollbar */
+::-webkit-scrollbar {
+  width: auto;
+}
+
+/* Animations */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Custom utility classes */
+@layer components {
+  .btn-primary {
+    @apply px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-md transition-colors duration-300 font-medium;
+  }
+  
+  .btn-secondary {
+    @apply px-4 py-2 bg-secondary-700 hover:bg-secondary-800 text-white rounded-md transition-colors duration-300 font-medium;
+  }
+  
+  .card {
+    @apply glass rounded-xl p-6 shadow-md;
+  }
+  
+  .input-field {
+    @apply w-full px-4 py-2 bg-white border border-secondary-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-secondary-800;
+  }
+}

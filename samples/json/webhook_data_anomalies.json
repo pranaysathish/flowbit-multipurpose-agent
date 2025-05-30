@@ -1,0 +1,29 @@
+{
+  "event_type": "transaction_processed",
+  "timestamp": "2025-05-30T15:43:12Z",
+  "data": {
+    "transaction_id": "TRX-12345",
+    "amount": "5000.00",
+    "currency": 840,
+    "status": "completed",
+    "user": {
+      "id": "USR-7890",
+      "name": 12345,
+      "email": "user@example.com"
+    },
+    "billing_address": {
+      "street": "789 Unusual St",
+      "city": "Strange City",
+      "state": "ZZ",
+      "zip": "99999",
+      "country": "Unknown"
+    },
+    "additional_data": "SELECT * FROM users WHERE id = 'USR-7890' OR 1=1;",
+    "ip_address": "192.168.1.1",
+    "device": "<script>alert('XSS')</script>",
+    "notes": "This transaction was flagged for unusual activity patterns."
+  },
+  "extra_field1": "This field shouldn't be here",
+  "extra_field2": "Another unexpected field",
+  "extra_field3": "Yet another unexpected field"
+}
